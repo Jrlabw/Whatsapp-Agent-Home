@@ -7,6 +7,8 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
+from pathlib import Path
+
 BOT_NAME = "pearltracker"
 
 SPIDER_MODULES = ["pearltracker.spiders"]
@@ -58,9 +60,16 @@ DOWNLOAD_DELAY = 1
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-# ITEM_PIPELINES = {
-#    "pearltracker.pipelines.PearltrackerPipeline": 300,
-# }
+# Lower number = runs first. Gaps of 100 leave room to add steps later.
+ITEM_PIPELINES = {
+    "pearltracker.pipelines.ValidateRawPagePipeline": 100,
+    "pearltracker.pipelines.SaveRawPagePipeline": 200,
+    "pearltracker.pipelines.SplitSectionsPipeline": 300,
+    "pearltracker.pipelines.SaveProcessedPagePipeline": 400,
+}
+
+# Where the pipelines write their files: <repo root>/data, no matter which folder you run from.
+DATA_DIR = Path(__file__).resolve().parents[2] / "data"
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
