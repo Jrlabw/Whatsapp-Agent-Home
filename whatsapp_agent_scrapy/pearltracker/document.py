@@ -29,3 +29,18 @@ class PageSection(BaseModel):
     text: str = Field(min_length=50)
     position: int = Field(ge=0)
 
+
+# The real home page has 9 sections (8 after exclusions). Far fewer means the layout changed.
+MIN_SECTIONS_PER_PAGE = 5
+
+
+class ProcessedPageDocument(BaseModel):
+    """A page split into clean Markdown sections, ready to be chunked for the LLM."""
+
+    model_config = ConfigDict(frozen=True)
+
+    url: HttpUrl
+    platform: str = Field(min_length=1)
+    crawled_at: datetime
+    sections: list[PageSection] = Field(min_length=MIN_SECTIONS_PER_PAGE)
+

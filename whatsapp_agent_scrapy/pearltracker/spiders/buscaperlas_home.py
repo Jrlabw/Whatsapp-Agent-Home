@@ -7,6 +7,7 @@ from scrapy_playwright.page import PageMethod
 
 class BuscaperlasHomeSpider(scrapy.Spider):
     name = "buscaperlas_home"
+    PLATFORM = "buscaperlas"
     START_URL = "https://www.buscaperlas.com/"
     READY_SELECTOR = "h2:has-text(' con más contexto y menos ruido')"
 
@@ -26,5 +27,6 @@ class BuscaperlasHomeSpider(scrapy.Spider):
     def parse(self,response):
         yield{
             "url": response.url,
-            "html": response.text
+            "platform": self.PLATFORM,
+            "html": response.text,
         }
